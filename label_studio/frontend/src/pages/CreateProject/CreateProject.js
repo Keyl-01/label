@@ -11,12 +11,15 @@ import { ImportPage } from './Import/Import';
 import { useImportPage } from './Import/useImportPage';
 import { useDraftProject } from './utils/useDraftProject';
 
+import { WorkspaceMembers } from "../Projects/Workspaces/WorkspaceMembers";
+import { ACTIONS, initialState, UserAssignerReducer } from '../../components_lse/UserAssigner/UserAssignerReducer';
+// onBlur={onSaveName}
 
-const ProjectName = ({ name, setName, onSaveName, onSubmit, error, description, setDescription, show = true }) => !show ? null :(
-  <form className={cn("project-name")} onSubmit={e => { e.preventDefault(); onSubmit(); }}>
+const ProjectName = ({ name, setName, onSaveName, onSubmit, error, description, setDescription, status, setSatus, show = true }) => !show ? null :(
+  <><form className={cn("project-name")} onSubmit={e => { e.preventDefault(); onSubmit(); }}>
     <div className="field field--wide">
-      <label htmlFor="project_name">Project Name</label>
-      <input name="name" id="project_name" value={name} onChange={e => setName(e.target.value)} onBlur={onSaveName} />
+      <label htmlFor="project_name">Module Name</label>
+      <input name="name" id="project_name" value={name} onChange={e => setName(e.target.value)} />
       {error && <span className="error">{error}</span>}
     </div>
     <div className="field field--wide">
@@ -30,7 +33,37 @@ const ProjectName = ({ name, setName, onSaveName, onSubmit, error, description, 
         onChange={e => setDescription(e.target.value)}
       />
     </div>
+    <div className="field field--wide">
+      <label>Status</label>
+      <div>
+        <div style={{display: 'inline', marginRight: '48px'}}>
+          <input
+            type="radio"
+            id="Active" 
+            value="Active"
+            checked={status === 'Active'} 
+            onChange={e => setSatus(e.target.value)}
+          />
+          <label htmlFor="Active" >Active</label>
+        </div>
+        <div style={{display: 'inline'}}>
+          <input 
+            type="radio" 
+            id="Inactive" 
+            value="Inactive" 
+            checked={status === 'Inactive'} 
+            onChange={e => setSatus(e.target.value)}
+          />
+          <label htmlFor="Inactive">Inactive</label>
+        </div>
+      </div>
+    </div>
+    <div className="field field--wide">
+    <WorkspaceMembers />
+    </div>
   </form>
+  
+  </>
 );
 
 export const CreateProject = ({ onClose }) => {
@@ -44,7 +77,9 @@ export const CreateProject = ({ onClose }) => {
   const [name, setName] = React.useState("");
   const [error, setError] = React.useState();
   const [description, setDescription] = React.useState("");
-  const [config, setConfig] = React.useState("<View></View>");
+  const [status, setSatus] = React.useState("Active");
+  const [usersState, dispatch] = React.useReducer(UserAssignerReducer, initialState);
+  // const [config, setConfig] = React.useState("<View></View>");
 
   React.useEffect(() => { setError(null); }, [name]);
 
@@ -53,24 +88,25 @@ export const CreateProject = ({ onClose }) => {
   const rootClass = cn("create-project");
   const tabClass = rootClass.elem("tab");
   const steps = {
-    name: <span className={tabClass.mod({ disabled: !!error })}>Project Name</span>,
+    name: <span className={tabClass.mod({ disabled: !!error })}>Module Name</span>,
     import: <span className={tabClass.mod({ disabled: uploadDisabled })}>Data Import</span>,
-    config: "Labeling Setup",
+    // config: "Labeling Setup",
   };
 
   // name intentionally skipped from deps:
   // this should trigger only once when we got project loaded
-  React.useEffect(() => project && !name && setName(project.title), [project]);
+  React.useEffect(() => project && !name && setName(project.name), [project]);
 
   const projectBody = React.useMemo(() => ({
-    title: name,
-    description,
-    label_config: config,
-  }), [name, description, config]);
+    name: name,
+    description
+  }), [name, description]);
 
   const onCreate = React.useCallback(async () => {
     const imported = await finishUpload();
     if (!imported) return;
+
+    console.log(project);
 
     setWaitingStatus(true);
     const response = await api.callApi('updateProject',{
@@ -93,12 +129,12 @@ export const CreateProject = ({ onClose }) => {
         pk: project.id,
       },
       body: {
-        title: name,
+        name: name,
       },
     });
     if (res.ok) return;
     const err = await res.json();
-    setError(err.validation_errors?.title);
+    setError(err.validation_errors?.name);
   };
 
   const onDelete = React.useCallback(async () => {
@@ -113,16 +149,74 @@ export const CreateProject = ({ onClose }) => {
     onClose?.();
   }, [project]);
 
+
+
+
+  // const abortController = useAbortController();
+  // const [membersList, setMembersList] = React.useState([]);
+  // const [networkState, setNetworkState] = React.useState(null);
+  // const fetchMembers = async (page  = 1, pageSize = 30) => {
+  //   setNetworkState('loading');
+  //   abortController.renew(); // Cancel any in flight requests
+
+  //   const requestParams = { page, page_size: pageSize };
+
+  //   if (isFF(2575)) {
+  //     requestParams.include = [
+  //       "id",
+  //       "firstName",
+  //       "lastName",
+  //       "email",
+  //       "userName",
+  //       "status"
+  //     ].join(',');
+  //   }
+
+  //   const data = await api.callApi("projectMembers", {
+  //     params: requestParams,
+  //     ...(isFF(FF_DEV_2575) ? {
+  //       signal: abortController.controller.current.signal,
+  //       errorFilter: (e) => e.error.includes('aborted'), 
+  //     } : null),
+  //   });
+  //   console.log(data);
+  //   // console.log('count:', data.count);
+  //   console.log('total:', data.total);
+  //   console.log(data.items);
+
+  //   setMembersList(data.items ?? []);
+  //   setNetworkState('loaded');
+
+  //   if (isFF(FF_DEV_2575) && data?.items?.length) {
+  //     const additionalData = await api.callApi("projectMembers", {
+  //       params: { ids: data?.items?.map(({ id }) => id).join(',') },
+  //       signal: abortController.controller.current.signal,
+  //       errorFilter: (e) => e.error.includes('aborted'), 
+  //     });
+
+  //     console.log('additionalData', additionalData);
+
+  //     if (additionalData?.items?.length) {
+  //       setMembersList(additionalData.items);
+  //     }
+  //   }
+  // };
+
+  // React.useEffect(() => {
+  //   fetchMembers();
+  // }, []);
+
+
   return (
     <Modal onHide={onDelete} fullscreen visible bare closeOnClickOutside={false}>
       <div className={rootClass}>
         <Modal.Header>
-          <h1>Create Project</h1>
+          <h1>Create Module</h1>
           <ToggleItems items={steps} active={step} onSelect={setStep} />
 
           <Space>
             <Button look="danger" size="compact" onClick={onDelete} waiting={waiting}>Delete</Button>
-            <Button look="primary" size="compact" onClick={onCreate} waiting={waiting || uploading} disabled={!project || uploadDisabled || error}>Save</Button>
+            <Button look="primary" size="compact" onClick={onCreate} waiting={waiting || uploading} disabled={!usersState.members.lenght || error}>Save</Button>
           </Space>
         </Modal.Header>
         <ProjectName
@@ -133,10 +227,13 @@ export const CreateProject = ({ onClose }) => {
           onSubmit={onCreate}
           description={description}
           setDescription={setDescription}
+          status={status}
+          setSatus={setSatus}
           show={step === "name"}
+          // membersList={membersList}
         />
-        <ImportPage project={project} show={step === "import"} {...pageProps} />
-        <ConfigPage project={project} onUpdate={setConfig} show={step === "config"} columns={columns} disableSaveButton={true} />
+        {/* <ImportPage project={project} show={step === "import"} {...pageProps} /> */}
+        {/* <ConfigPage project={project} onUpdate={setConfig} show={step === "config"} columns={columns} disableSaveButton={true} /> */}
       </div>
     </Modal>
   );

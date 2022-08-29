@@ -24,21 +24,118 @@ from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
+token = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoie1wiSWRcIjpcIjRmODQ3YjFlLWVhOTMtNGFhMS05MTBkLTAwZjQyMmQ2NDRlM1wiLFwiVXNlck5hbWVcIjpcImFkbWluXCIsXCJFbWFpbFwiOm51bGwsXCJGdWxsTmFtZVwiOlwiQWRtaW4gQWRtaW5cIixcIkZpcnN0TmFtZVwiOlwiQWRtaW5cIixcIkxhc3ROYW1lXCI6XCJBZG1pblwiLFwiUGhvbmVOdW1iZXJcIjpcIm51bGxcIixcIlN0YXR1c1wiOjMsXCJDcmVhdGVkQnlcIjpudWxsLFwiQ3JlYXRlZERhdGVcIjpcIjAwMDEtMDEtMDFUMDA6MDA6MDBcIixcIlJlZ2lzdHJhdGlvbkRhdGVcIjpudWxsLFwiTGFzdFZpc2l0RGF0ZVwiOm51bGwsXCJMYXN0UmVzZXREYXRlXCI6bnVsbCxcIlJvbGVcIjpbXCJTdXBlciBBZG1pblwiLFwiUHJvamVjdCBPd25lclwiLFwiTW9kdWxlIE93bmVyXCJdLFwiQXZhdGFyXCI6bnVsbCxcIlBlcm1pc3Npb25zXCI6W1wiVXNlcnNNYW5hZ2VtZW50LkNyZWF0ZVwiLFwiVXNlcnNNYW5hZ2VtZW50LlZpZXdcIixcIlVzZXJzTWFuYWdlbWVudC5VcGRhdGVcIixcIlVzZXJzTWFuYWdlbWVudC5VcGRhdGVTdGF0dXNcIixcIlVzZXJzTWFuYWdlbWVudC5SZW1vdmVcIixcIlVzZXJzTWFuYWdlbWVudC5HcmFudEFSb2xlXCIsXCJVc2Vyc01hbmFnZW1lbnQuR3JhbnRNQ1JvbGVcIixcIlVzZXJzTWFuYWdlbWVudC5HcmFudE1PUm9sZVwiLFwiVXNlcnNNYW5hZ2VtZW50LkdyYW50UENSb2xlXCIsXCJVc2Vyc01hbmFnZW1lbnQuR3JhbnRQT1JvbGVcIixcIlVzZXJSb2xlc01hbmFnZW1lbnQuQ3JlYXRlXCIsXCJVc2VyUm9sZXNNYW5hZ2VtZW50LlZpZXdcIixcIlVzZXJSb2xlc01hbmFnZW1lbnQuVXBkYXRlXCIsXCJVc2VyUm9sZXNNYW5hZ2VtZW50LlVwZGF0ZVN0YXR1c1wiLFwiQXR0cmlidXRlc01hbmFnZW1lbnQuQ3JlYXRlXCIsXCJBdHRyaWJ1dGVzTWFuYWdlbWVudC5WaWV3XCIsXCJBdHRyaWJ1dGVzTWFuYWdlbWVudC5VcGRhdGVcIixcIkF0dHJpYnV0ZXNNYW5hZ2VtZW50LlVwZGF0ZVN0YXR1c1wiLFwiQXR0cmlidXRlc01hbmFnZW1lbnQuUmVtb3ZlXCIsXCJNb2R1bGVzTWFuYWdlbWVudC5DcmVhdGVcIixcIk1vZHVsZXNNYW5hZ2VtZW50LlZpZXdBbGxcIixcIk1vZHVsZXNNYW5hZ2VtZW50LlZpZXdBc3NpZ25lZFwiLFwiTW9kdWxlc01hbmFnZW1lbnQuVXBkYXRlXCIsXCJNb2R1bGVzTWFuYWdlbWVudC5VcGRhdGVTdGF0dXNcIixcIk1vZHVsZXNNYW5hZ2VtZW50LlJlbW92ZVwiLFwiUHJvamVjdHNNYW5hZ2VtZW50LkNyZWF0ZVwiLFwiUHJvamVjdHNNYW5hZ2VtZW50LlZpZXdBbGxcIixcIlByb2plY3RzTWFuYWdlbWVudC5WaWV3TW9kdWxlUHJvamVjdFwiLFwiUHJvamVjdHNNYW5hZ2VtZW50LlZpZXdBc3NpZ25lZFwiLFwiUHJvamVjdHNNYW5hZ2VtZW50LlVwZGF0ZVwiLFwiUHJvamVjdHNNYW5hZ2VtZW50LlVwZGF0ZVN0YXR1c1wiLFwiUHJvamVjdHNNYW5hZ2VtZW50LlJlbW92ZVwiLFwiUHJvamVjdHNNYW5hZ2VtZW50LkV4cG9ydFZlcnNpb25cIixcIkRhdGFzZXRNYW5hZ2VtZW50LlVwbG9hZFwiLFwiRGF0YXNldE1hbmFnZW1lbnQuRG93bmxvYWRcIixcIkRhdGFzZXRNYW5hZ2VtZW50LlVwZGF0ZVwiLFwiRGlzY3Vzc2lvbi5Xcml0ZUNvbW1lbnRcIixcIkRpc2N1c3Npb24uVmlld0xpc3RcIixcIkNvbmZpZ3VyYXRpb24uU3lzdGVtQ29uZmlndXJhdGlvblwiXSxcIkhhc1JvbGVTdXBwZXJBZG1pblwiOmZhbHNlLFwiQWRkcmVzc1wiOlwibnVsbFwiLFwiT3JnYW5pemF0aW9uXCI6XCJudWxsXCIsXCJEZXNjcmlwdGlvblwiOlwibnVsbFwifSIsImV4cCI6MTY2MTc3NTQ2M30.7sY4k0xL5-X0WEjyuPDwJK7PLLzfLciyoXkquMwU_HU'
+
 
 @api_view(['GET'])
 @login_required
-def module_list(request):
+def module_roles(request):
+    req = requests.get(settings.DMS_API + '/modules/create', headers={'Authorization': token})
+    res = req.json()
+    print(res)
+    return Response(res, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+@login_required
+def module_search_members(request):
     data = {
         "start": 1,
         "length": 20,
         "keyword": "",
         "column": "CreatedAt",
-        "direction": ""
+        "direction": "desc"
     }
-    req = requests.post(settings.DMS_API + '/modules', json=data, headers={'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoie1wiSWRcIjpcIjRmODQ3YjFlLWVhOTMtNGFhMS05MTBkLTAwZjQyMmQ2NDRlM1wiLFwiVXNlck5hbWVcIjpcImFkbWluXCIsXCJFbWFpbFwiOm51bGwsXCJGdWxsTmFtZVwiOlwiQWRtaW4gQWRtaW5cIixcIkZpcnN0TmFtZVwiOlwiQWRtaW5cIixcIkxhc3ROYW1lXCI6XCJBZG1pblwiLFwiUGhvbmVOdW1iZXJcIjpudWxsLFwiU3RhdHVzXCI6MyxcIkNyZWF0ZWRCeVwiOm51bGwsXCJDcmVhdGVkRGF0ZVwiOlwiMDAwMS0wMS0wMVQwMDowMDowMFwiLFwiUmVnaXN0cmF0aW9uRGF0ZVwiOm51bGwsXCJMYXN0VmlzaXREYXRlXCI6bnVsbCxcIkxhc3RSZXNldERhdGVcIjpudWxsLFwiUm9sZVwiOltcIlN1cGVyIEFkbWluXCIsXCJQcm9qZWN0IE93bmVyXCIsXCJNb2R1bGUgT3duZXJcIl0sXCJBdmF0YXJcIjpudWxsLFwiUGVybWlzc2lvbnNcIjpbXCJVc2Vyc01hbmFnZW1lbnQuQ3JlYXRlXCIsXCJVc2Vyc01hbmFnZW1lbnQuVmlld1wiLFwiVXNlcnNNYW5hZ2VtZW50LlVwZGF0ZVwiLFwiVXNlcnNNYW5hZ2VtZW50LlVwZGF0ZVN0YXR1c1wiLFwiVXNlcnNNYW5hZ2VtZW50LlJlbW92ZVwiLFwiVXNlcnNNYW5hZ2VtZW50LkdyYW50QVJvbGVcIixcIlVzZXJzTWFuYWdlbWVudC5HcmFudE1DUm9sZVwiLFwiVXNlcnNNYW5hZ2VtZW50LkdyYW50TU9Sb2xlXCIsXCJVc2Vyc01hbmFnZW1lbnQuR3JhbnRQQ1JvbGVcIixcIlVzZXJzTWFuYWdlbWVudC5HcmFudFBPUm9sZVwiLFwiVXNlclJvbGVzTWFuYWdlbWVudC5DcmVhdGVcIixcIlVzZXJSb2xlc01hbmFnZW1lbnQuVmlld1wiLFwiVXNlclJvbGVzTWFuYWdlbWVudC5VcGRhdGVcIixcIlVzZXJSb2xlc01hbmFnZW1lbnQuVXBkYXRlU3RhdHVzXCIsXCJBdHRyaWJ1dGVzTWFuYWdlbWVudC5DcmVhdGVcIixcIkF0dHJpYnV0ZXNNYW5hZ2VtZW50LlZpZXdcIixcIkF0dHJpYnV0ZXNNYW5hZ2VtZW50LlVwZGF0ZVwiLFwiQXR0cmlidXRlc01hbmFnZW1lbnQuVXBkYXRlU3RhdHVzXCIsXCJBdHRyaWJ1dGVzTWFuYWdlbWVudC5SZW1vdmVcIixcIk1vZHVsZXNNYW5hZ2VtZW50LkNyZWF0ZVwiLFwiTW9kdWxlc01hbmFnZW1lbnQuVmlld0FsbFwiLFwiTW9kdWxlc01hbmFnZW1lbnQuVmlld0Fzc2lnbmVkXCIsXCJNb2R1bGVzTWFuYWdlbWVudC5VcGRhdGVcIixcIk1vZHVsZXNNYW5hZ2VtZW50LlVwZGF0ZVN0YXR1c1wiLFwiTW9kdWxlc01hbmFnZW1lbnQuUmVtb3ZlXCIsXCJQcm9qZWN0c01hbmFnZW1lbnQuQ3JlYXRlXCIsXCJQcm9qZWN0c01hbmFnZW1lbnQuVmlld0FsbFwiLFwiUHJvamVjdHNNYW5hZ2VtZW50LlZpZXdNb2R1bGVQcm9qZWN0XCIsXCJQcm9qZWN0c01hbmFnZW1lbnQuVmlld0Fzc2lnbmVkXCIsXCJQcm9qZWN0c01hbmFnZW1lbnQuVXBkYXRlXCIsXCJQcm9qZWN0c01hbmFnZW1lbnQuVXBkYXRlU3RhdHVzXCIsXCJQcm9qZWN0c01hbmFnZW1lbnQuUmVtb3ZlXCIsXCJQcm9qZWN0c01hbmFnZW1lbnQuRXhwb3J0VmVyc2lvblwiLFwiRGF0YXNldE1hbmFnZW1lbnQuVXBsb2FkXCIsXCJEYXRhc2V0TWFuYWdlbWVudC5Eb3dubG9hZFwiLFwiRGF0YXNldE1hbmFnZW1lbnQuVXBkYXRlXCIsXCJEaXNjdXNzaW9uLldyaXRlQ29tbWVudFwiLFwiRGlzY3Vzc2lvbi5WaWV3TGlzdFwiLFwiQ29uZmlndXJhdGlvbi5TeXN0ZW1Db25maWd1cmF0aW9uXCJdLFwiSGFzUm9sZVN1cHBlckFkbWluXCI6ZmFsc2UsXCJBZGRyZXNzXCI6bnVsbCxcIk9yZ2FuaXphdGlvblwiOm51bGwsXCJEZXNjcmlwdGlvblwiOm51bGx9IiwiZXhwIjoxNjYwOTAzNDQ2fQ.ilmPeL0g6UWJIk_FAab_VLqxOWvwbGpwvxBXqoFnS4U'})
+    req = requests.post(settings.DMS_API + '/modules/create/search-member', json=data, headers={'Authorization': token})
     res = req.json()
     print(res)
     return Response(res, status=status.HTTP_200_OK)
+
+
+@api_view(['GET', 'POST'])
+@login_required
+def module_list(request):
+    if request.method == 'POST':
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+        name = body['name']
+        print('body_unicode', body_unicode)
+        print('body', body)
+        print('name', name)
+        # avatar = request.POST['avatar']
+        # avatarName = request.POST['avatarName']
+        # description = request.POST['description']
+        # statusModule = request.POST['status']
+        # memberRoles = request.POST.getlist['memberRoles']
+        data = {
+            "name": name,
+            # "avatar": avatar,
+            # "avatarName": avatarName,
+            # "description": description,
+            # "status": statusModule,
+            # "memberRoles": [
+            #     {
+            #     "userId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+            #     "roleId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+            #     }
+            # ]
+        }
+        req = requests.post(settings.DMS_API + '/modules/create', json=data, headers={'Authorization': token})
+        res = req.json()
+        print(res)
+        return Response(res, status=status.HTTP_200_OK)
+    elif request.method == 'GET':
+        data = {
+            "start": 1,
+            "length": 20,
+            "keyword": "",
+            "column": "CreatedAt",
+            "direction": ""
+        }
+        req = requests.post(settings.DMS_API + '/modules', json=data, headers={'Authorization': token})
+        res = req.json()
+        # print(res)
+        return Response(res, status=status.HTTP_200_OK)
+    
+
+@api_view(['GET', 'PATCH', 'DELETE'])
+@login_required
+def module_detail(request, pk):
+    if request.method == 'DELETE':
+        req = requests.delete(settings.DMS_API + '/modules/'+pk+'/delete', headers={'Authorization': token})
+        res = req.json()
+        print(res)
+        return Response(res, status=status.HTTP_200_OK)
+    elif request.method == 'PATCH':
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+        name = body['name']
+        print('body_unicode', body_unicode)
+        print('body', body)
+        print('name', name)
+
+        data = {
+            "name": name,
+            # "avatar": avatar,
+            # "avatarName": avatarName,
+            # "description": description,
+            # "status": statusModule,
+            # "memberRoles": [
+            #     {
+            #     "userId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+            #     "roleId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+            #     }
+            # ]
+        }
+        req = requests.put(settings.DMS_API + '/modules/create', json=data, headers={'Authorization': token})
+        res = req.json()
+        print(res)
+        return Response(res, status=status.HTTP_200_OK)
+    elif request.method == 'GET':
+        req = requests.get(settings.DMS_API + '/modules/'+pk+'/details', headers={'Authorization': token})
+        res = req.json()
+        print(res)
+        return Response(res, status=status.HTTP_200_OK)
+
 
 @login_required
 def project_list(request):
@@ -47,6 +144,7 @@ def project_list(request):
 
 @login_required
 def project_settings(request, pk, sub_path):
+    print('da vao')
     return render(request, 'projects/settings.html')
 
 

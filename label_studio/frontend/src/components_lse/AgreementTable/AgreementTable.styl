@@ -1,0 +1,43 @@
+.agreement-table
+  &__title
+    font-weight 500
+    font-size 14px
+    line-height 16px
+    display flex
+    justify-content space-between
+    margin-bottom 6px
+
+    &::after
+      content: '%'
+      color rgba(#000, 0.4)
+
+  &__user-info
+    display flex
+    align-items center
+
+  &__name
+    margin-left 8px
+
+  &__agreement
+    display flex
+    opacity 0.6
+    align-items center
+    justify-content space-between
+
+    &_withScore
+      opacity 1
+
+  &__score
+    text-align right
+
+    &_zero
+      color: #000
+
+    &_low
+      color: #DD0000
+
+    &_medium
+      color: #D98F00
+
+    &_high
+      color: #419400

@@ -9,24 +9,24 @@ export const useDraftProject = () => {
     const response = await api.callApi('projects');
 
     // always create the new one
-    const projects = response?.results ?? [];
+    const projects = response?.items ?? [];
     const lastIndex = projects.length;
     let projectNumber = lastIndex + 1;
-    let projectName = `New Project #${projectNumber}`;
+    let projectName = `New Module #${projectNumber}`;
 
     // dirty hack to get proper non-duplicate name
-    while(projects.find(({ title }) => title === projectName)) {
+    while(projects.find(({ name }) => name === projectName)) {
       projectNumber++;
-      projectName = `New Project #${projectNumber}`;
+      projectName = `New Module #${projectNumber}`;
     }
 
-    const draft = await api.callApi('createProject', {
-      body: {
-        title: projectName,
-      },
-    });
+    // const draft = await api.callApi('createProject', {
+    //   body: {
+    //     name: projectName,
+    //   },
+    // });
 
-    if (draft) setProject(draft);
+    // if (draft) setProject(draft);
   }, []);
 
   React.useEffect(() => {

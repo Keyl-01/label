@@ -7,6 +7,7 @@ import { Block } from '../../utils/bem';
 
 export const GeneralSettings = () => {
   const {project, fetchProject} = useContext(ProjectContext);
+  console.log('asdasd')
 
   const updateProject = useCallback(() => {
     if (project.id) fetchProject(project.id, true);
@@ -27,6 +28,56 @@ export const GeneralSettings = () => {
     {value: "Sequential", label: "Sequential", description: "Tasks are ordered by Data manager ordering"},
     {value: "Uniform", label: "Random", description: "Tasks are chosen with uniform random"},
   ];
+
+  console.log(project)
+
+
+
+  //   const fetchProjects = async (page  = currentPage, pageSize = defaultPageSize) => {
+  //   setNetworkState('loading');
+  //   abortController.renew(); // Cancel any in flight requests
+
+  //   const requestParams = { page, page_size: pageSize };
+
+  //   if (isFF(2575)) {
+  //     requestParams.include = [
+  //       'id',
+  //       "name",
+  //       "project",
+  //       "status"
+  //     ].join(',');
+  //   }
+
+  //   const data = await api.callApi("projects", {
+  //     params: requestParams,
+  //     ...(isFF(FF_DEV_2575) ? {
+  //       signal: abortController.controller.current.signal,
+  //       errorFilter: (e) => e.error.includes('aborted'), 
+  //     } : null),
+  //   });
+  //   console.log(data);
+  //   // console.log('count:', data.count);
+  //   console.log('total:', data.total);
+  //   console.log(data.items);
+
+  //   setTotalItems(data?.total ?? 1);
+  //   setProjectsList(data.items ?? []);
+  //   setNetworkState('loaded');
+
+  //   if (isFF(FF_DEV_2575) && data?.items?.length) {
+  //     const additionalData = await api.callApi("projects", {
+  //       params: { ids: data?.items?.map(({ id }) => id).join(',') },
+  //       signal: abortController.controller.current.signal,
+  //       errorFilter: (e) => e.error.includes('aborted'), 
+  //     });
+
+  //     console.log('additionalData', additionalData);
+
+  //     if (additionalData?.items?.length) {
+  //       setProjectsList(additionalData.items);
+  //     }
+  //   }
+  // };
 
   return (
     <div style={{width: 480}}>

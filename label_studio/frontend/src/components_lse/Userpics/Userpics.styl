@@ -1,0 +1,22 @@
+.userpics
+  display: flex
+  flex-direction row-reverse
+
+  &__userpic
+    border-radius 100%
+
+  &:not(&_overlay) > &__userpic
+    margin-right: 8px
+
+  &_overlay > &__userpic
+    position relative
+    border-color #fff
+
+    .userpic
+      background-color #fff
+      border 2px solid #fff
+      border-color inherit
+
+  &_overlay &__userpic:not(:last-child)
+    left -13px
+    width 21px

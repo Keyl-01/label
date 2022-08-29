@@ -1,0 +1,35 @@
+.user-assigner
+  height 100%
+  min-height min-content
+  display flex
+  flex-direction column
+
+  &__body
+    flex 1
+    display grid
+    grid-template-columns 1fr 40px 1fr
+    grid-column-gap 8px
+    align-items center
+    min-height 0
+
+  &__actions
+    height 32px
+    margin-top 16px
+
+  &_disabled &__body
+    opacity 0.5
+
+  &_disabled&
+    max-height 400px
+    overflow hidden
+    position relative
+    pointer-events none
+
+    &::after
+      content ""
+      bottom 0
+      left 0
+      height 100%
+      width 100%
+      position absolute
+      background linear-gradient(to top, #fff, rgba(#fff, 0))

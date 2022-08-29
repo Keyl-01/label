@@ -1,0 +1,147 @@
+.users-list
+  height 500px
+  display flex
+  flex-direction column
+  overflow hidden
+
+  &__header
+    font-size 16px
+    line-height 22px
+    margin-bottom 12px
+    font-weight 400
+    display: flex
+
+  &__title
+    display flex
+    font-weight 500
+
+  &__subtitle
+    opacity 0.6
+    margin-left 5px
+    font-weight 400
+
+  &__count
+    margin-left: auto
+    padding-left: 8px
+    opacity: 0.6
+
+  &__list
+    flex 1
+    border 1px solid rgba(#000, 0.15)
+    overflow auto
+
+  &__toolbar
+    --user-item-height 42px
+
+    top 0
+    position sticky
+    z-index 1
+    background-color #fff
+    border-bottom 1px solid rgba(#000, 0.1)
+
+  &__item
+    cursor pointer
+
+  &__disabled-message
+    padding 12px 16px
+    font-weight normal
+    line-height 22px
+    color rgba(#000, 0.6)
+    background rgba(#000, 0.03)
+
+.users-list-item
+  height var(--user-item-height, 60px)
+  align-items center
+  display grid
+  grid-template-columns 48px calc(100% - 48px)
+
+  &__leading
+    height 100%
+    display flex
+    align-items center
+    justify-content center
+
+  &__content
+    flex none
+    height 100%
+    width 100%
+    display grid
+    max-width 100%
+    align-items center
+
+    .input
+      width 100%
+      height 100%
+
+  &:not(&_single) &__content
+    grid-template-columns 28px calc(100% - 28px)
+
+  &__info
+    padding 0 12px
+    width 100%
+    box-sizing border-box
+
+  &__line
+    width 100%
+    display flex
+    line-height 16px
+    justify-content space-between
+
+  &__name
+    font-size 16px
+    font-weight 500
+
+  &__email
+    flex 1
+    font-size 14px
+    overflow hidden
+    font-weight normal
+    white-space nowrap
+    max-width min-content
+    text-overflow ellipsis
+
+  &__role
+    flex none
+    text-align right
+    font-size 14px
+    opacity 0.6
+    font-weight normal
+    min-width min-content
+
+    .select
+      position relative
+      height 23px
+      min-height 23px
+      padding 0 60px
+
+      &__list
+        top 0
+        left 0
+        width 100%
+        height 100%
+        padding 0 2px
+        margin 0
+        border none
+        border-radius 3px
+        position absolute
+        background-color transparent
+        transition box-shadow 80ms ease
+        font-size: 14px
+        border-right 10px solid transparent
+
+      &_ghost
+        margin-left -10px
+        border 1px solid transparent
+
+        & ^[0]__list
+          padding 0 5px
+
+        &:hover
+          border 1px solid $black_15
+
+  &:nth-child(even)
+    background-color rgba(#000, 0.03)
+
+  &_disabled
+    opacity 0.6
+    pointer-events none

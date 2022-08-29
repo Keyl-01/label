@@ -13,3 +13,7 @@ export { ToggleItems } from "./ToggleItems/ToggleItems";
 export { Userpic } from "./Userpic/Userpic";
 export { VersionNotifier } from "./VersionNotifier/VersionNotifier";
 export { Pagination } from "./Pagination/Pagination";
+
+export { ProgressBar } from "./ProgressBar/ProgressBar";
+export { Features } from "./Features/Features";
+export { Tag } from "./Tag/Tag";

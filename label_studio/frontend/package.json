@@ -153,6 +153,8 @@
     "browserContext": "default"
   },
   "dependencies": {
-    "lodash.clonedeep": "^4.5.0"
+    "caniuse-lite": "^1.0.30001383",
+    "lodash.clonedeep": "^4.5.0",
+    "svg-react-loader": "^0.4.6"
   }
 }

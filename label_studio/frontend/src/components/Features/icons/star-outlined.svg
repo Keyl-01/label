@@ -1,0 +1,31 @@
+function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
+
+import * as React from "react";
+
+var _ref = /*#__PURE__*/React.createElement("path", {
+  fillRule: "evenodd",
+  clipRule: "evenodd",
+  d: "M12 1.5c2.027 0 3.869.491 5.424 1.371a9.757 9.757 0 013.705 3.705C22.009 8.13 22.5 9.974 22.5 12c0 2.027-.491 3.869-1.371 5.424a9.758 9.758 0 01-3.705 3.705C15.87 22.009 14.027 22.5 12 22.5c-2.026 0-3.869-.491-5.424-1.371a9.757 9.757 0 01-3.705-3.705C1.991 15.87 1.5 14.027 1.5 12c0-2.026.491-3.869 1.371-5.424A9.757 9.757 0 016.576 2.87C8.13 1.991 9.974 1.5 12 1.5z",
+  fill: "#fff",
+  stroke: "#000",
+  strokeOpacity: 0.15
+});
+
+var _ref2 = /*#__PURE__*/React.createElement("path", {
+  d: "M11.051 7.851c.392-1.178.588-1.768.949-1.768.36 0 .557.59.949 1.768l.248.746c.22.66.33.99.592 1.18.262.189.61.189 1.306.189h.767c1.29 0 1.934 0 2.045.348.111.348-.415.721-1.466 1.467l-.559.396c-.582.413-.873.62-.976.934-.103.313.01.652.236 1.33l.22.66c.397 1.195.596 1.793.305 2.009-.291.216-.805-.149-1.833-.878l-.677-.48c-.559-.397-.838-.595-1.157-.595-.319 0-.598.198-1.157.595l-.677.48c-1.028.73-1.542 1.094-1.833.878-.291-.216-.092-.814.306-2.01l.22-.66c.225-.677.338-1.016.235-1.33-.103-.313-.394-.52-.976-.933l-.558-.396c-1.052-.746-1.578-1.12-1.467-1.467.11-.348.755-.348 2.045-.348h.767c.696 0 1.044 0 1.306-.19.262-.188.372-.518.592-1.179l.248-.746z",
+  fill: "#FA8C16"
+});
+
+function SvgStarOutlined(props, svgRef) {
+  return /*#__PURE__*/React.createElement("svg", _extends({
+    width: 24,
+    height: 24,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    xmlns: "http://www.w3.org/2000/svg",
+    ref: svgRef
+  }, props), _ref, _ref2);
+}
+
+var ForwardRef = /*#__PURE__*/React.forwardRef(SvgStarOutlined);
+export default ForwardRef;
