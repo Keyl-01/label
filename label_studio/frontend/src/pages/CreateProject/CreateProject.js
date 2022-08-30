@@ -11,11 +11,12 @@ import { ImportPage } from './Import/Import';
 import { useImportPage } from './Import/useImportPage';
 import { useDraftProject } from './utils/useDraftProject';
 
+import { useCurrentUser } from '../../providers/CurrentUser';
 import { WorkspaceMembers } from "../Projects/Workspaces/WorkspaceMembers";
 import { ACTIONS, initialState, UserAssignerReducer } from '../../components_lse/UserAssigner/UserAssignerReducer';
 // onBlur={onSaveName}
 
-const ProjectName = ({ name, setName, onSaveName, onSubmit, error, description, setDescription, status, setSatus, show = true }) => !show ? null :(
+const ProjectName = ({ name, setName, onSaveName, onSubmit, error, description, setDescription, status, setSatus, show = true, setMember }) => !show ? null :(
   <><form className={cn("project-name")} onSubmit={e => { e.preventDefault(); onSubmit(); }}>
     <div className="field field--wide">
       <label htmlFor="project_name">Module Name</label>
@@ -59,7 +60,7 @@ const ProjectName = ({ name, setName, onSaveName, onSubmit, error, description, 
       </div>
     </div>
     <div className="field field--wide">
-    <WorkspaceMembers />
+    <WorkspaceMembers onSaveMembers={setMember}/>
     </div>
   </form>
   
@@ -78,10 +79,47 @@ export const CreateProject = ({ onClose }) => {
   const [error, setError] = React.useState();
   const [description, setDescription] = React.useState("");
   const [status, setSatus] = React.useState("Active");
+
   const [usersState, dispatch] = React.useReducer(UserAssignerReducer, initialState);
   // const [config, setConfig] = React.useState("<View></View>");
 
   React.useEffect(() => { setError(null); }, [name]);
+
+  React.useEffect(() => { console.log('chotngudi', usersState.members); }, [usersState]);
+
+  const onChangeMember = state => {
+    // console.log('duma', state.members);
+  }
+
+  // const { user } = useCurrentUser();
+
+  // const onSaveMembers = useCallback(async (state) => {
+  //   const params = {
+  //     pk: 1, // Test
+  //   };
+
+  //   const initial = state.initialMembers.map(u => u.id);
+
+  //   for (const user of state.members.filter(u => !initial.includes(u.id))) {
+  //     const body = { user: user.id };
+
+  //     await api.callApi("setWorkspaceMembers", { params, body });
+  //   }
+
+  //   const currentIds = state.members.map(u => u.id);
+
+  //   for (const id of initial.filter(id => !currentIds.includes(id))) {
+  //     const body = { user: id };
+
+  //     await api.callApi("deleteWorkspaceMembers", { params, body });
+  //   }
+
+  //   // @todo errors handling
+  //   // onSave?.();
+  // }, [api]);
+
+
+
 
   const { columns, uploading, uploadDisabled, finishUpload, pageProps } = useImportPage(project);
 
@@ -89,7 +127,7 @@ export const CreateProject = ({ onClose }) => {
   const tabClass = rootClass.elem("tab");
   const steps = {
     name: <span className={tabClass.mod({ disabled: !!error })}>Module Name</span>,
-    import: <span className={tabClass.mod({ disabled: uploadDisabled })}>Data Import</span>,
+    // import: <span className={tabClass.mod({ disabled: uploadDisabled })}>Data Import</span>,
     // config: "Labeling Setup",
   };
 
@@ -149,7 +187,7 @@ export const CreateProject = ({ onClose }) => {
     onClose?.();
   }, [project]);
 
-
+  console.log(usersState.members);
 
 
   // const abortController = useAbortController();
@@ -230,6 +268,7 @@ export const CreateProject = ({ onClose }) => {
           status={status}
           setSatus={setSatus}
           show={step === "name"}
+          setMember={onChangeMember}
           // membersList={membersList}
         />
         {/* <ImportPage project={project} show={step === "import"} {...pageProps} /> */}

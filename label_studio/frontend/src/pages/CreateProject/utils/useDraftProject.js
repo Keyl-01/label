@@ -27,6 +27,7 @@ export const useDraftProject = () => {
     // });
 
     // if (draft) setProject(draft);
+    setProject({name: projectName})
   }, []);
 
   React.useEffect(() => {

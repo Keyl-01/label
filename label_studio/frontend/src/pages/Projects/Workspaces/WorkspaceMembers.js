@@ -4,9 +4,13 @@ import { useAPI } from '../../../providers/ApiProvider';
 import { useCurrentUser } from '../../../providers/CurrentUser';
 import "../../DataManager/UserAssigner.styl";
 
-export const WorkspaceMembers = () => {
+export const WorkspaceMembers = ({ onSaveMembers }) => {
   const api = useAPI();
   const { user } = useCurrentUser();
+
+  // const onSaveMembers = state => {
+  //   onMembers(state)
+  // }
 
   // const onSaveMembers = useCallback(async (state) => {
   //   const params = {
@@ -67,7 +71,7 @@ export const WorkspaceMembers = () => {
       selectedUsersListTitle='Module'
       selectedUsersListSubtitle="Members"
       usersLoader={fetchUsers}
-      // usersAssigner={onSaveMembers}
+      usersAssigner={onSaveMembers}
     />
   );
 };

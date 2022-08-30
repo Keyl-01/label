@@ -21,7 +21,7 @@ export const UserAssigner = ({
   usersDisabledMessage = null,
   selectedUsersDisabledMessage = null,
   usersLoader,
-  // usersAssigner,
+  usersAssigner,
   displayRole = true,
   disabled = false,
   style,
